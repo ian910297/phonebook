@@ -4,6 +4,13 @@
 #include <time.h>
 #include <assert.h>
 
+// MMAP LIBRARY
+//#define MMAP
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <fcntl.h>
+
 #include IMPL
 
 #ifdef OPT
@@ -53,6 +60,7 @@ int main(int argc, char *argv[])
     __builtin___clear_cache((char *) pHead, (char *) pHead + sizeof(entry));
 #endif
     clock_gettime(CLOCK_REALTIME, &start);
+#ifndef MMAP
     while (fgets(line, sizeof(line), fp)) {
         while (line[i] != '\0')
             i++;
@@ -60,6 +68,29 @@ int main(int argc, char *argv[])
         i = 0;
         e = append(line, e);
     }
+#else
+    // get file size
+    struct stat st;
+    stat(DICT_FILE, &st);
+
+    int fd = open(DICT_FILE, O_RDWR);
+
+    // mapping file to virtual memory
+    char *map;
+    map = mmap(0, st.st_size+1, PROT_READ|PROT_WRITE, MAP_PRIVATE, fd, 0);
+    map[st.st_size] = '\0';
+
+    while(*map!='\0') {
+        i = 0;
+        while(*map!='\n') {
+            line[i++] = *map++;
+        }
+        line[i] = '\0';
+
+        e = append(line, e);
+        map++;
+    }
+#endif
     clock_gettime(CLOCK_REALTIME, &end);
     cpu_time1 = diff_in_second(start, end);
 
