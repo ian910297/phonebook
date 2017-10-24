@@ -6,24 +6,38 @@ CFLAGS_opt  = -O0
 EXEC = phonebook_orig phonebook_opt
 
 GIT_HOOKS := .git/hooks/applied
+.DEFAULT_GOAL := fgets
 .PHONY: all
 all: $(GIT_HOOKS) $(EXEC)
 
 $(GIT_HOOKS):
 	@scripts/install-git-hooks
 	@echo
+SRCS_fgets = main_fgets.c
+SRCS_mmap = main_mmap.c
 
-SRCS_common = main.c
+fgets: phonebook_orig_fgets phonebook_opt_fgets
+mmap: phonebook_orig_mmap phonebook_opt_mmap
 
-phonebook_orig: $(SRCS_common) phonebook_orig.c phonebook_orig.h
+phonebook_orig_fgets: $(SRCS_fgets) phonebook_orig.c phonebook_orig.h
 	$(CC) $(CFLAGS_common) $(CFLAGS_orig) \
-		-DIMPL="\"$@.h\"" -o $@ \
-		$(SRCS_common) $@.c
+		-DIMPL="\"phonebook_orig.h\"" -o phonebook_orig \
+		$(SRCS_fgets) phonebook_orig.c
 
-phonebook_opt: $(SRCS_common) phonebook_opt.c phonebook_opt.h
+phonebook_opt_fgets: $(SRCS_fgets) phonebook_opt.c phonebook_opt.h
 	$(CC) $(CFLAGS_common) $(CFLAGS_opt) \
-		-DIMPL="\"$@.h\"" -o $@ \
-		$(SRCS_common) $@.c
+		-DIMPL="\"phonebook_opt.h\"" -o phonebook_opt \
+		$(SRCS_fgets) phonebook_opt.c
+
+phonebook_orig_mmap: $(SRCS_mmap) phonebook_orig.c phonebook_orig.h
+	$(CC) $(CFLAGS_common) $(CFLAGS_orig) \
+		-DIMPL="\"phonebook_orig.h\"" -o phonebook_orig \
+		$(SRCS_mmap) phonebook_orig.c
+
+phonebook_opt_mmap: $(SRCS_mmap) phonebook_opt.c phonebook_opt.h
+	$(CC) $(CFLAGS_common) $(CFLAGS_opt) \
+		-DIMPL="\"phonebook_opt.h\"" -o phonebook_opt \
+		$(SRCS_mmap) phonebook_opt.c
 
 run: $(EXEC)
 	echo 3 | sudo tee /proc/sys/vm/drop_caches

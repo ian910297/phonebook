@@ -5,7 +5,6 @@
 #include <assert.h>
 
 // MMAP LIBRARY
-//#define MMAP
 #include <sys/mman.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -19,7 +18,7 @@
 #define OUT_FILE "orig.txt"
 #endif
 
-#define DICT_FILE "./dictionary/words.txt"
+#define DICT_FILE "./dictionary/data.txt"
 
 static double diff_in_second(struct timespec t1, struct timespec t2)
 {
@@ -60,15 +59,6 @@ int main(int argc, char *argv[])
     __builtin___clear_cache((char *) pHead, (char *) pHead + sizeof(entry));
 #endif
     clock_gettime(CLOCK_REALTIME, &start);
-#ifndef MMAP
-    while (fgets(line, sizeof(line), fp)) {
-        while (line[i] != '\0')
-            i++;
-        line[i - 1] = '\0';
-        i = 0;
-        e = append(line, e);
-    }
-#else
     // get file size
     struct stat st;
     stat(DICT_FILE, &st);
@@ -90,7 +80,6 @@ int main(int argc, char *argv[])
         e = append(line, e);
         map++;
     }
-#endif
     clock_gettime(CLOCK_REALTIME, &end);
     cpu_time1 = diff_in_second(start, end);
 
@@ -100,12 +89,12 @@ int main(int argc, char *argv[])
     e = pHead;
 
     /* the givn last name to find */
-    char input[MAX_LAST_NAME_SIZE] = "zyxel";
+    char input[MAX_LAST_NAME_SIZE] = "Stacy Hampton";
     e = pHead;
 
     assert(findName(input, e) &&
            "Did you implement findName() in " IMPL "?");
-    assert(0 == strcmp(findName(input, e)->lastName, "zyxel"));
+    assert(0 == strcmp(findName(input, e)->lastName, "Stacy Hampton"));
 
 #if defined(__GNUC__)
     __builtin___clear_cache((char *) pHead, (char *) pHead + sizeof(entry));
