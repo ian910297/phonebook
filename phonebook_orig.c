@@ -5,6 +5,17 @@
 
 #include "phonebook_orig.h"
 
+entry *init()
+{
+    entry *new_node;
+
+    new_node = (entry*)malloc(sizeof(new_node));
+    printf("size of entry : %lu bytes\n", sizeof(entry));
+    new_node->pNext = NULL;
+
+    return new_node;
+}
+
 /* original version */
 entry *findName(char lastName[], entry *pHead)
 {
@@ -25,4 +36,15 @@ entry *append(char lastName[], entry *e)
     e->pNext = NULL;
 
     return e;
+}
+
+void release_memory(entry *e)
+{
+    entry *tmp;
+
+    while (e!=NULL) {
+        tmp = e;
+        e = e->pNext;
+        free(tmp);
+    }
 }

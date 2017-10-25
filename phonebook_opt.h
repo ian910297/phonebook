@@ -5,7 +5,7 @@
 
 /* TODO: After modifying the original version, uncomment the following
  * line to set OPT properly */
-#define OPT 1
+#define OPT 2
 
 #if OPT==1
 /*
@@ -18,6 +18,8 @@ typedef struct __PHONE_BOOK_ENTRY {
 
 entry *findName(char lastName[], entry *pHead);
 entry *append(char lastName[], entry *e);
+entry *init();
+void release_memory(entry *e);
 #elif OPT==2
 /*
  * add binary search tree
@@ -30,6 +32,8 @@ typedef struct __PHONE_BOOK_ENTRY {
 
 entry *findName(char lastName[], entry *pHead);
 entry *append(char lastName[], entry *e);
+entry *init();
+void release_memory(entry *e);
 #endif
 
 #endif
