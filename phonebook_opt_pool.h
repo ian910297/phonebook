@@ -5,6 +5,8 @@
  * line to set OPT properly */
 #define OPT 2
 
+#include "pool.h"
+
 #if OPT==1
 /*
  * Simplify data structure
@@ -25,6 +27,6 @@ typedef struct __PHONE_BOOK_ENTRY {
 #endif
 
 entry *findName(char lastName[], entry *pHead);
-entry *append(char lastName[], entry *e);
-entry *init();
+entry *append(char lastName[], entry *e, MEMPool *pool);
+entry *init(MEMPool *pool);
 void release_memory(entry *e);

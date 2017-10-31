@@ -3,14 +3,15 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "phonebook_opt.h"
+#include "phonebook_opt_pool.h"
+#include "pool.h"
 
 #if OPT==1
-entry *init()
+entry *init(MEMPool *pool)
 {
     entry *new_node;
 
-    new_node = (entry*)malloc(sizeof(entry));
+    new_node = (entry*)poolloc(sizeof(entry), pool);
     printf("size of entry : %lu bytes\n", sizeof(entry));
     new_node->pNext = NULL;
 
@@ -28,9 +29,9 @@ entry *findName(char lastName[], entry *pHead)
     return NULL;
 }
 
-entry *append(char lastName[], entry *e)
+entry *append(char lastName[], entry *e, MEMPool *pool)
 {
-    e->pNext = (entry *) malloc(sizeof(entry));
+    e->pNext = (entry *) poolloc(sizeof(entry), pool);
     e = e->pNext;
     strcpy(e->lastName, lastName);
     e->pNext = NULL;
@@ -43,9 +44,9 @@ void release_memory(entry *e)
     free(e);
 }
 #elif OPT==2
-entry *init()
+entry *init(MEMPool *pool)
 {
-    return append("Ian Chi", NULL);
+    return append("Ian Chi", NULL, pool);
 }
 
 entry *findName(char lastName[], entry *pHead)
@@ -67,14 +68,14 @@ entry *findName(char lastName[], entry *pHead)
     return NULL;
 }
 
-entry *append(char lastName[], entry *root)
+entry *append(char lastName[], entry *root, MEMPool *pool)
 {
     entry *new_node;
     entry *current;
     entry *parent;
 
     // build new_node
-    new_node = (entry*)malloc(sizeof(entry));
+    new_node = (entry*)poolloc(sizeof(entry), pool);
     strcpy(new_node->lastName, lastName);
     new_node->pLeft = NULL;
     new_node->pRight = NULL;

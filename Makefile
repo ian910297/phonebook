@@ -15,9 +15,13 @@ $(GIT_HOOKS):
 	@echo
 SRCS_fgets = main_fgets.c
 SRCS_mmap = main_mmap.c
+SRCS_fgets_pool = main_fgets_pool.c
+SRCS_mmap_pool = main_mmap_pool.c
 
 fgets: orig_fgets opt_fgets
 mmap: orig_mmap opt_mmap
+pool_fgets: orig_fgets opt_fgets_pool
+pool_mmap: orig_mmap opt_mmap_pool
 
 orig_fgets: $(SRCS_fgets) phonebook_orig.c phonebook_orig.h
 	$(CC) $(CFLAGS_common) $(CFLAGS_orig) \
@@ -38,6 +42,20 @@ opt_mmap: $(SRCS_mmap) phonebook_opt.c phonebook_opt.h
 	$(CC) $(CFLAGS_common) $(CFLAGS_opt) \
 		-DIMPL="\"phonebook_opt.h\"" -o phonebook_opt \
 		$(SRCS_mmap) phonebook_opt.c
+
+opt_fgets_pool: $(SRCS_fgets_pool) phonebook_opt_pool.c phonebook_opt_pool.h
+	$(CC) $(CFLAGS_common) $(CFLAGS_opt) \
+		-DMEMPOOL="\"pool.h\"" \
+		-DIMPL="\"phonebook_opt_pool.h\"" \
+		-o phonebook_opt \
+		$(SRCS_fgets_pool) phonebook_opt_pool.c pool.c
+
+opt_mmap_pool: $(SRCS_mmap_pool) phonebook_opt_pool.c phonebook_opt_pool.h
+	$(CC) $(CFLAGS_common) $(CFLAGS_opt) \
+		-DMEMPOOL="\"pool.h\"" \
+		-DIMPL="\"phonebook_opt_pool.h\"" \
+		-o phonebook_opt \
+		$(SRCS_mmap_pool) phonebook_opt_pool.c pool.c
 
 run: $(EXEC)
 	echo 3 | sudo tee /proc/sys/vm/drop_caches
