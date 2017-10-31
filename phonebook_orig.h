@@ -1,6 +1,4 @@
-#ifndef _PHONEBOOK_H
-#define _PHONEBOOK_H
-
+#pragma once
 #define MAX_LAST_NAME_SIZE 32
 
 /* original version */
@@ -22,5 +20,3 @@ entry *findName(char lastName[], entry *pHead);
 entry *append(char lastName[], entry *e);
 entry *init();
 void release_memory(entry *e);
-
-#endif

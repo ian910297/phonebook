@@ -16,25 +16,25 @@ $(GIT_HOOKS):
 SRCS_fgets = main_fgets.c
 SRCS_mmap = main_mmap.c
 
-fgets: phonebook_orig_fgets phonebook_opt_fgets
-mmap: phonebook_orig_mmap phonebook_opt_mmap
+fgets: orig_fgets opt_fgets
+mmap: orig_mmap opt_mmap
 
-phonebook_orig_fgets: $(SRCS_fgets) phonebook_orig.c phonebook_orig.h
+orig_fgets: $(SRCS_fgets) phonebook_orig.c phonebook_orig.h
 	$(CC) $(CFLAGS_common) $(CFLAGS_orig) \
 		-DIMPL="\"phonebook_orig.h\"" -o phonebook_orig \
 		$(SRCS_fgets) phonebook_orig.c
 
-phonebook_opt_fgets: $(SRCS_fgets) phonebook_opt.c phonebook_opt.h
+opt_fgets: $(SRCS_fgets) phonebook_opt.c phonebook_opt.h
 	$(CC) $(CFLAGS_common) $(CFLAGS_opt) \
 		-DIMPL="\"phonebook_opt.h\"" -o phonebook_opt \
 		$(SRCS_fgets) phonebook_opt.c
 
-phonebook_orig_mmap: $(SRCS_mmap) phonebook_orig.c phonebook_orig.h
+orig_mmap: $(SRCS_mmap) phonebook_orig.c phonebook_orig.h
 	$(CC) $(CFLAGS_common) $(CFLAGS_orig) \
 		-DIMPL="\"phonebook_orig.h\"" -o phonebook_orig \
 		$(SRCS_mmap) phonebook_orig.c
 
-phonebook_opt_mmap: $(SRCS_mmap) phonebook_opt.c phonebook_opt.h
+opt_mmap: $(SRCS_mmap) phonebook_opt.c phonebook_opt.h
 	$(CC) $(CFLAGS_common) $(CFLAGS_opt) \
 		-DIMPL="\"phonebook_opt.h\"" -o phonebook_opt \
 		$(SRCS_mmap) phonebook_opt.c
@@ -44,6 +44,7 @@ run: $(EXEC)
 	watch -d -t "./phonebook_orig && echo 3 | sudo tee /proc/sys/vm/drop_caches"
 
 cache-test: $(EXEC)
+	rm -rf *.txt
 	perf stat --repeat 100 \
 		-e cache-misses,cache-references,instructions,cycles \
 		./phonebook_orig

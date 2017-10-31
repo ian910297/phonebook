@@ -10,7 +10,7 @@ entry init()
 {
     entry *new_node;
 
-    new_node = (entry*)malloc(sizeof(new_node));
+    new_node = (entry*)malloc(sizeof(entry));
     printf("size of entry : %lu bytes\n", sizeof(entry));
     new_node->pNext = NULL;
 
@@ -40,13 +40,7 @@ entry *append(char lastName[], entry *e)
 
 void release_memory(entry *e)
 {
-    entry *tmp;
-
-    while(e!=NULL) {
-        tmp = e;
-        e = e->pNext;
-        free(tmp);
-    }
+    free(e);
 }
 #elif OPT==2
 entry *init()
