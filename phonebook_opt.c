@@ -40,7 +40,13 @@ entry *append(char lastName[], entry *e)
 
 void release_memory(entry *e)
 {
-    free(e);
+    entry *tmp;
+
+    while (e!=NULL) {
+        tmp = e;
+        e = e->pNext;
+        free(tmp);
+    }
 }
 #elif OPT==2
 entry *init()

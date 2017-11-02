@@ -65,9 +65,22 @@ cache-test: $(EXEC)
 	rm -rf *.txt
 	perf stat --repeat 100 \
 		-e cache-misses,cache-references,instructions,cycles \
+		-o perf.orig \
 		./phonebook_orig
 	perf stat --repeat 100 \
 		-e cache-misses,cache-references,instructions,cycles \
+		-o perf.opt \
+		./phonebook_opt
+
+cache-record: $(EXEC)
+	rm -rf *.txt
+	perf record \
+		-e cache-misses,cache-references,instructions,cycles \
+		-o perf.orig.data \
+		./phonebook_orig
+	perf record \
+		-e cache-misses,cache-references,instructions,cycles \
+		-o perf.opt.data \
 		./phonebook_opt
 
 output.txt: cache-test calculate

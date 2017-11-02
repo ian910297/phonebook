@@ -1,12 +1,19 @@
 #include <stdlib.h>
+#include <malloc.h>
 
 #include "pool.h"
+
+//#define MEM_ALIGN
 
 MEMPool* initPool(size_t size)
 {
     MEMPool *pool = (MEMPool*)malloc(sizeof(MEMPool));
 
+#ifndef MEM_ALIGN
     pool->ptr = malloc(size);
+#else
+    pool->ptr = memalign(16, size);
+#endif
     pool->used = 0;
     pool->size = size;
 
@@ -26,5 +33,6 @@ void* poolloc(size_t size, MEMPool *pool)
 
 void freePool(MEMPool *pool)
 {
+    free(pool->ptr);
     free(pool);
 }
